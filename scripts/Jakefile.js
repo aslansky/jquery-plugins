@@ -55,7 +55,7 @@ task('default', function() {
 
 
 desc('Runs js lint for all jquery.*.js files.');
-task('lint', function(params) {
+task('lint', function(ci) {
 	console.log('Running jslint ...');
 	async.walkfiles('.')
 		.filter(function(file) {
@@ -65,13 +65,13 @@ task('lint', function(params) {
 		.each(function(file) {
 			if (!JSLINT(file.data)) {
 				console.log(showErrors(file.name, JSLINT.errors) + '\n');
-				if (params) {
+				if (ci) {
 					fs.writeFileSync(__dirname + '/testing/reports/' + file.name + '.jslint.xml', generateLintErrorXML(file.name, JSLINT.errors), 'utf8');
 				}
 			}
 			else {
 				console.log(colours.bold.green + '[Ok]' + colours.reset + ' ' + file.name);
-				if (params) {
+				if (ci) {
 					fs.writeFileSync(__dirname + '/testing/reports/' + file.name + '.jslint.xml', generateLintSuccessXML(file.name), 'utf8');
 				}
 			}
@@ -81,11 +81,16 @@ task('lint', function(params) {
 
 
 desc('Runs test specs.');
-task('test', ['lint'], function(params) {
+task('test', ['lint'], function(ci, browsers) {
 	console.log('Running test ...');
 	var cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf';
-	if (params) {
-		cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
+	if (ci) {
+		if (browsers) {
+			cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser ' + browsers + ' --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
+		}
+		else {
+			cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
+		}
 	}
 	exec(cmd, function (error, stdout, stderr) {
 		console.log(stdout);
@@ -96,11 +101,15 @@ task('test', ['lint'], function(params) {
 
 desc('Runs tests for continuous integration.');
 task('ci', function() {
+	var browsers = [];
+	for (val in arguments) {
+		browsers.push(arguments[val]);
+	}
 	exec('mkdir -p scripts/testing/reports', function () {
 		var lint = jake.Task['lint'];
 		var test = jake.Task['test'];
 		lint.execute.apply(lint, [true]);
-		test.execute.apply(test, [true]);
+		test.execute.apply(test, [true, browsers.join(',')]);
 		complete();
 	});
 }, true);
