@@ -36,4 +36,4 @@ test:
 	@./scripts/jake.js -f scripts/Jakefile.js test
 
 ci:
-	@./scripts/jake.js -f scripts/Jakefile.js ci
+	@./scripts/jake.js -f scripts/Jakefile.js ci[$(BROWSERS)]
