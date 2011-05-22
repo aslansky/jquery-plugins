@@ -83,13 +83,13 @@ task('lint', function(ci) {
 desc('Runs test specs.');
 task('test', ['lint'], function(ci, browsers) {
 	console.log('Running test ...');
-	var cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf';
+	var cmd = 'java -jar scripts/testing/JsTestDriver.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf';
 	if (ci) {
 		if (browsers) {
-			cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser ' + browsers + ' --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
+			cmd = 'java -jar scripts/testing/JsTestDriver.jar --port 4224 --browser ' + browsers + ' --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
 		}
 		else {
-			cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
+			cmd = 'java -jar scripts/testing/JsTestDriver.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
 		}
 	}
 	exec(cmd, function (error, stdout, stderr) {
