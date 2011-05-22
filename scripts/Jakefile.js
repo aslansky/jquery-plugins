@@ -85,7 +85,7 @@ task('test', ['lint'], function(params) {
 	console.log('Running test ...');
 	var cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf';
 	if (params) {
-		cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/report';
+		cmd = 'java -jar scripts/testing/JsTestDriver-1.3.2.jar --port 4224 --browser open --tests all --basePath . --config scripts/testing/jsTestDriver.conf --testOutput scripts/testing/reports';
 	}
 	exec(cmd, function (error, stdout, stderr) {
 		console.log(stdout);
