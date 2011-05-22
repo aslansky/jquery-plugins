@@ -120,8 +120,8 @@ var showErrors = function(filename, errors) {
 
 var generateLintSuccessXML = function(filename) {
 	var output = [];
-	output.push('<testsuite name="jslint.tests" tests="1" timestamp="' + new Date().toString() + '" errors="0" failures="0" skipped="0" time="0">');
-	output.push('<testcase classname="' + getLintClass(filename) + '" name="testJSHint"></testcase>');
+	output.push('<testsuite name="JSLint tests" tests="1" timestamp="' + new Date().toString() + '" errors="0" failures="0" skipped="0" time="0">');
+	output.push('<testcase classname="' + getLintClass(filename) + '" name="jsLint test"></testcase>');
 	output.push('</testsuite>');
 	return output.join('\n');
 };
@@ -129,11 +129,11 @@ var generateLintSuccessXML = function(filename) {
 
 var generateLintErrorXML = function(filename, errors) {
 	var output = [];
-	output.push('<testsuite name="JSHint tests" tests="' + errors.length + '" timestamp="' + new Date().toString() + '" errors="0" failures="' + errors.length + '" skipped="0" time="0">');
+	output.push('<testsuite name="JSLint tests" tests="' + errors.length + '" timestamp="' + new Date().toString() + '" errors="0" failures="' + errors.length + '" skipped="0" time="0">');
 	for (var i = 0; i < errors.length; i += 1) {
 		var e = errors[i];
 		if (!e) continue;
-		output.push('<testcase classname="' + getLintClass(filename) + '" name="testJSLint">');
+		output.push('<testcase classname="' + getLintClass(filename) + '" name="jsLint test">');
 		output.push('<failure message="' + filename + ' failed JSLint">');
 		output.push('<![CDATA[');
 		output.push(e.evidence);
