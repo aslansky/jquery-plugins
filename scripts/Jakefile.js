@@ -120,8 +120,8 @@ var showErrors = function(filename, errors) {
 
 var generateLintSuccessXML = function(filename) {
 	var output = [];
-	output.push('<testsuite name="JSHint tests" tests="1" timestamp="' + new Date().toString() + '" errors="0" failures="0" skipped="0" time="0">');
-	output.push('<testcase classname="' + filename + '" name="testJSHint"></testcase>');
+	output.push('<testsuite name="jslint.tests" tests="1" timestamp="' + new Date().toString() + '" errors="0" failures="0" skipped="0" time="0">');
+	output.push('<testcase classname="' + getLintClass(filename) + '" name="testJSHint"></testcase>');
 	output.push('</testsuite>');
 	return output.join('\n');
 };
@@ -133,8 +133,8 @@ var generateLintErrorXML = function(filename, errors) {
 	for (var i = 0; i < errors.length; i += 1) {
 		var e = errors[i];
 		if (!e) continue;
-		output.push('<testcase classname="' + filename + '" name="testJSHint">');
-		output.push('<failure message="' + filename + ' failed JSHint">');
+		output.push('<testcase classname="' + getLintClass(filename) + '" name="testJSLint">');
+		output.push('<failure message="' + filename + ' failed JSLint">');
 		output.push('<![CDATA[');
 		output.push(e.evidence);
     output.push(e.reason);
@@ -147,3 +147,6 @@ var generateLintErrorXML = function(filename, errors) {
 	return output.join('\n');
 };
 
+var getLintClass = function(filename) {
+	return 'jshint.' + filename.replace('.js', '').replace('jquery.', '');
+};
