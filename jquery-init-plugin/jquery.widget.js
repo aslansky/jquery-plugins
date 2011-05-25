@@ -33,6 +33,10 @@
 		'load': false, // try loading plugins
 		'repository': '' // url to plugin repository
 	};
+	
+	var isLoading = [];
+	var initLater = [];
+	
 	/*
 	 * toCamel
 	 *
@@ -40,6 +44,20 @@
 	 */
 	var toCamel = function (value) {
 		return value.replace(/(\-[a-z])/g, function($1){return $1.toUpperCase().replace('-','');});
+	};
+	
+	/*
+	 * deferredInit
+	 *
+	 * @description initializes the plugin after js file was loaded
+	 */
+	var deferredInit = function (plugin) {
+		jQuery.each(initLater, function (index, item) {
+			if (item[2] === plugin) {
+				initPlugin.apply(this, item);
+			}
+		});
+		isLoading.splice(jQuery.inArray(plugin, isLoading), 1);
 	};
 	
 	/*
@@ -53,12 +71,18 @@
 			ele[cPlugin](data);
 		}
 		// try loading widget file
-		else {
-			jQuery.getScript(settings.repository + plugin + '.js', function () {
-				if (context.isFunction(ele[cPlugin])) {
-					ele[cPlugin](data);
-				}
-			});
+		else if (settings.load) {
+			// if plugin file is already loading, defer initialization
+			if (jQuery.inArray(plugin, isLoading) > -1) {
+				initLater.push([ele, data, plugin, cPlugin]);
+			}
+			else {
+				isLoading.push(plugin);
+				jQuery.getScript(settings.repository + plugin + '.js', function () {
+					initLater.push([ele, data, plugin, cPlugin]);
+					deferredInit(plugin);
+				});
+			}
 		}
 	};
 	

@@ -35,9 +35,10 @@
 		describe('loading and initialising a plugin',function() {
 			it(' should load a html page and initialize the test plugin, then output "plugin initialized" in the test container', function() {
 				this.server.respondWith('GET', 'load.html', [200, {'Content-Type': 'text/html' }, '<div data-plugin="test-plugin"></div>']);
-				var callback = sinon.spy();
-				jQuery('#jasmine-fixtures').loadAndInit('load.html', callback);
+				var spy = sinon.spy();
+				jQuery('#jasmine-fixtures').loadAndInit('load.html', spy);
 				this.server.respond();
+				expect(spy).toHaveBeenCalledOnce();
 				expect(jQuery('#jasmine-fixtures div').html()).toEqual('plugin initialized');
 			});
 		});
